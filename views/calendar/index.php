@@ -20,7 +20,7 @@
     <hr>
     <div id=calendar class="row">
         <?php foreach ($calendar as $month => $monthArray): ?>
-            <div class="col-sm-3">
+            <div class="col-md-3">
                 <div class="panel panel-default">
                     <div class="panel-heading"><h4><?= $monthNames[$month] ?></h4></div>
                     <div class="panel-body">
