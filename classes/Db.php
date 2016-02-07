@@ -23,41 +23,60 @@ class Db
     public function query($sql, $params = []) {
 
         $sth = $this->dbh->prepare($sql);
-        $sth->execute($params);
+        foreach ($params as $key => $param) {
+            $sth->bindValue($key, $param);
+        }
+        $sth->execute();
         return $sth->fetchAll(\PDO::FETCH_CLASS, $this->className);
     }
 
     public function queryAssoc($sql, $params = []) {
 
         $sth = $this->dbh->prepare($sql);
-        $sth->execute($params);
+        foreach ($params as $key => $param) {
+            $sth->bindValue($key, $param);
+        }
+        $sth->execute();
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function queryRow($sql, $params = []) {
 
         $sth = $this->dbh->prepare($sql);
-        $sth->execute($params);
+        foreach ($params as $key => $param) {
+            $sth->bindValue($key, $param);
+        }
+        $sth->execute();
         return $sth->fetchObject($this->className);
     }
 
     public function queryRowAssoc($sql, $params = []) {
 
         $sth = $this->dbh->prepare($sql);
-        $sth->execute($params);
+        foreach ($params as $key => $param) {
+            $sth->bindValue($key, $param);
+        }
+        $sth->execute();
         return $sth->fetch();
     }
 
     public function exec($sql, $params = []) {
 
         $sth = $this->dbh->prepare($sql);
-        return $sth->execute($params);
+        foreach ($params as $key => $param)
+        {
+            $sth->bindValue($key, $param);
+        }
+        return $sth->execute();
     }
 
     public function countRowsExec($sql, $params = []) {
 
         $sth = $this->dbh->prepare($sql);
-        $sth->execute($params);
+        foreach ($params as $key => $param) {
+            $sth->bindValue($key, $param);
+        }
+        $sth->execute();
         return $sth->rowCount();
     }
 

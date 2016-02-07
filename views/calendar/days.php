@@ -6,10 +6,12 @@
             <li class="active"><a><span class="glyphicon glyphicon-star-empty"></span> Выходные дни</a></li>
             <li><a href="/calendar/task"><span class="glyphicon glyphicon-envelope"></span> Текст задания</a></li>
         </ul>
+        <?php include __DIR__ . '/_message.php'; ?>
         <div id="days" class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
                 <a class="btn btn-primary" href="/calendar/edit">Добавить</a>
+                <?php if ($days): ?>
                 <table class="table table-striped table-hover">
                     <thead>
                     <tr>
@@ -30,6 +32,7 @@
                     <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php endif; ?>
             </div>
         </div>
     </div>

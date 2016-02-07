@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Yuriy
- * Date: 26.01.2016
- * Time: 22:05
- */
+
 
 function my_autoload($class) {
 

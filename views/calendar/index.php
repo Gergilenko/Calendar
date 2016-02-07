@@ -33,11 +33,11 @@
                             <?php foreach($monthArray as $week): ?>
                                 <tr>
                                     <?php foreach ($week as $weekDay => $day) {
-                                        if (in_array($weekDay, $defaultWeekends)) {
-                                            echo '<td class="weekend">' .  $day . '</td>';
-                                        }
-                                        elseif (!empty($name = array_search($currentYear . '-' . $month . '-' . $day, $daysOff))) {
+                                        if (!empty($name = array_search($currentYear . '-' . $month . '-' . $day, $daysOff))) {
                                             echo '<td class="dayoff"><span title="' . $name . '"  data-toggle="tooltip">' .  $day . '</span></td>';
+                                        }
+                                        elseif (in_array($weekDay, $defaultWeekends)) {
+                                            echo '<td class="weekend">' .  $day . '</td>';
                                         }
                                         else {
                                             echo '<td>' .  $day . '</td>';

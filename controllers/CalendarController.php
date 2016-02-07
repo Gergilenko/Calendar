@@ -28,12 +28,14 @@ class CalendarController {
 
         // Array of days off to highlight in calendar
         $daysOff = [];
-        foreach (Dayoff::searchByColumn('date', $currentYear) as $obj) {
-            $obj->date = strtotime($obj->date);
-            // month and day without zero
-            $daysOff[$obj->name] = date('Y-n-j', $obj->date);
+        $data = Dayoff::searchByColumn('date', $currentYear);
+        if ($data) {
+            foreach ($data as $item) {
+                $item->date = strtotime($item->date);
+                // month and day without zero
+                $daysOff[$item->name] = date('Y-n-j', $item->date);
+            }
         }
-
 
         $calendar =[];
 
@@ -70,7 +72,6 @@ class CalendarController {
             }
             $calendar[$month] = $monthArray;
         }
-        //var_dump($calendar);die;
         $view = new View;
         $view->minYear = date('Y') - 6;
         $view->maxYear = date('Y') + 2;
@@ -87,10 +88,19 @@ class CalendarController {
 
     // List of all days off added
     public function actionDays() {
-
+        $message = [];
         $view = new View;
+
+        if (!empty($_GET['error'])) {
+            switch($_GET['error']) {
+                case 23000:
+                    $message = ['warning' => 'Выходной не сохранен. Введенная дата уже обозначена.'];
+                default:
+            }
+        }
         $view->days = Dayoff::selectAll('ORDER BY date DESC');
 
+        $view->message = $message;
         $view->display('calendar/days.php');
     }
 
@@ -103,28 +113,30 @@ class CalendarController {
 
     // Add/Edit Day off
     public function actionEdit() {
+        $message = [];
 
         $view = new View;
         $view->isNew = true;
         // If we have date data - then Editing
         if (!empty($_GET['date'])) {
-            $view->isNew = false;
             //Checking date format
             if (preg_match(DATE_PATTERN, $_GET['date'])) {
+                $view->isNew = false;
                 $date = $_GET['date'];
+                //selectByColumn returns an array of objects, so we take 1st element
+                $view->dayoff = (new Dayoff)->selectByColumn('date', $date)[0];
             } else {
-                die('Неправильный формат даты.');
+                $message = ['danger' => 'Неправильный формат даты.'];
             }
-            //selectByColumn returns an array of objects, so we take 1st element
-            $view->dayoff = (new Dayoff)->selectByColumn('date', $date)[0];
         }
-
+        $view->message = $message;
         $view->display('calendar/edit.php');
 
     }
 
     // Save info about Day off
     public function actionSave() {
+        $error = 0;
 
         if (preg_match(DATE_PATTERN, $_POST['date']) && !empty($_POST['name'])) {
             $day = new Dayoff;
@@ -133,9 +145,15 @@ class CalendarController {
             }
             $day->name = $_POST['name'];
             $day->date = $_POST['date'];
-            $day->save();
+
+            try {
+                $day->save();
+            }
+            catch (\PDOException $e) {
+                $error = $e->getCode();
+            }
         }
-        View::redirect('calendar/days');
+        View::redirect('calendar/days?error=' . $error);
     }
 
     // Deleting info about Day off
